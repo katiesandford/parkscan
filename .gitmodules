@@ -1,0 +1,3 @@
+[submodule "Parkscan/ASCommon-Android"]
+	path = Parkscan/ASCommon-Android
+	url = git@git.airsource.co.uk:airsource/ASCommon-Android

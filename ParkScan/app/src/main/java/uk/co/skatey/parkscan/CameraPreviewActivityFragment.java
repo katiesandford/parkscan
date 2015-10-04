@@ -9,14 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import uk.co.airsource.android.common.ui.cameraview.ASCameraView;
+
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class CameraPreviewActivityFragment extends Fragment {
 
-    private Camera mCamera;
-    private CameraPreview mPreview;
+    private ASCameraView mPreview;
 
     public CameraPreviewActivityFragment() {
     }
@@ -35,34 +36,8 @@ public class CameraPreviewActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_camera_preview, container);
-        mPreview = (CameraPreview) fragmentView.findViewById(R.id.camera);
-        boolean qOpened = safeCameraOpen();
-        if (qOpened) {
-            mPreview.setCamera(mCamera);
-        }
+        mPreview = (ASCameraView) fragmentView.findViewById(R.id.camera);
+        mPreview.enableView();
         return fragmentView;
-    }
-
-    private boolean safeCameraOpen() {
-        boolean qOpened = false;
-
-        try {
-            releaseCameraAndPreview();
-            mCamera = Camera.open(0);
-            qOpened = (mCamera != null);
-        } catch (Exception e) {
-            Log.e(getString(R.string.app_name), "failed to open Camera");
-            e.printStackTrace();
-        }
-
-        return qOpened;
-    }
-
-    private void releaseCameraAndPreview() {
-        mPreview.setCamera(null);
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        }
     }
 }
