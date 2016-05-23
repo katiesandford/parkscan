@@ -3,4 +3,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="eep">Epp</string>
+    <string name="camera_error">A camera error occured! The camera does not appear to be supported.</string>
+    <string name="request_permission">This app needs to use the camera to scan barcodes. Please allow access to the camera to continue.</string>
 </resources>

@@ -1,1 +1,1 @@
-include ':app', ':ASCommon-Android:ASCamera', ':ASCommon-Android:ASUtils'
+include ':app'

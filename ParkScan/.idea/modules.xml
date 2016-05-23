@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ASCommon-Android/ASCamera/ASCamera.iml" filepath="$PROJECT_DIR$/ASCommon-Android/ASCamera/ASCamera.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ASCommon-Android/ASCommon-Android.iml" filepath="$PROJECT_DIR$/ASCommon-Android/ASCommon-Android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ASCommon-Android/ASUtils/ASUtils.iml" filepath="$PROJECT_DIR$/ASCommon-Android/ASUtils/ASUtils.iml" />
       <module fileurl="file://$PROJECT_DIR$/ParkScan.iml" filepath="$PROJECT_DIR$/ParkScan.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
