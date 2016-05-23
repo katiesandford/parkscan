@@ -621,6 +621,14 @@ public class CameraPreviewActivityFragment extends Fragment
     }
 
     private void onDecodeResult(String result) {
+        if (result.startsWith("A")) {
+            // Received athlete
+        } else if (result.startsWith("P")) {
+            // Received position
+        } else {
+            // Unknown
+            Toast.makeText(getActivity(), R.string.unknown_barcode_message, Toast.LENGTH_SHORT).show();
+        }
         Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
     }
 
@@ -705,13 +713,16 @@ public class CameraPreviewActivityFragment extends Fragment
         RectF bufferRect = new RectF(0, 0, mPreviewSize.getHeight(), mPreviewSize.getWidth());
         float centerX = viewRect.centerX();
         float centerY = viewRect.centerY();
+
+        bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
+        matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
+        float scale = Math.max(
+                (float) viewHeight / mPreviewSize.getHeight(),
+                (float) viewWidth / mPreviewSize.getWidth());
+        matrix.postScale(scale, scale, centerX, centerY);
+
         if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
-            bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
-            matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
-            float scale = Math.max(
-                    (float) viewHeight / mPreviewSize.getHeight(),
-                    (float) viewWidth / mPreviewSize.getWidth());
-            matrix.postScale(scale, scale, centerX, centerY);
+
             matrix.postRotate(90 * (rotation - 2), centerX, centerY);
         } else if (Surface.ROTATION_180 == rotation) {
             matrix.postRotate(180, centerX, centerY);
