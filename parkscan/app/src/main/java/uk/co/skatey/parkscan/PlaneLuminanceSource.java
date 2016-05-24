@@ -7,7 +7,7 @@ import com.google.zxing.LuminanceSource;
 import java.nio.ByteBuffer;
 
 /**
- * Created by Katie on 19/05/2016.
+ * Created by Sam on 19/05/2016.
  */
 public class PlaneLuminanceSource extends LuminanceSource {
 

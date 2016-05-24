@@ -6,4 +6,5 @@
     <string name="camera_error">A camera error occured! The camera does not appear to be supported.</string>
     <string name="request_permission">This app needs to use the camera to scan barcodes. Please allow access to the camera to continue.</string>
     <string name="unknown_barcode_message">Unknown barcode</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

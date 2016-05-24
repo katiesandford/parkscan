@@ -9,7 +9,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -31,6 +30,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentCompat;
 import android.util.Log;
 import android.util.Size;
@@ -48,8 +48,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
@@ -57,7 +55,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class CameraPreviewActivityFragment extends Fragment
-        implements /*View.OnClickListener,*/ FragmentCompat.OnRequestPermissionsResultCallback {
+        implements FragmentCompat.OnRequestPermissionsResultCallback {
+
+    private @Nullable
+    OnBarcodeScannedListener mListener;
 
     /**
      * Conversion from screen rotation to JPEG orientation.
@@ -378,12 +379,30 @@ public class CameraPreviewActivityFragment extends Fragment
 //        view.findViewById(R.id.fragment).setOnClickListener(this);
 //        view.findViewById(R.id.info).setOnClickListener(this);
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.camera);
+        mTextureView.setAspectRatio(18, 10);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFile = new File(getActivity().getExternalFilesDir(null), "pic.jpg");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnBarcodeScannedListener) {
+            mListener = (OnBarcodeScannedListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnBarcodeScannedListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -526,13 +545,13 @@ public class CameraPreviewActivityFragment extends Fragment
 
                 // We fit the aspect ratio of TextureView to the size of preview we picked.
                 int orientation = getResources().getConfiguration().orientation;
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    mTextureView.setAspectRatio(
-                            mPreviewSize.getWidth(), mPreviewSize.getHeight());
-                } else {
-                    mTextureView.setAspectRatio(
-                            mPreviewSize.getHeight(), mPreviewSize.getWidth());
-                }
+//                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                    mTextureView.setAspectRatio(
+//                            mPreviewSize.getWidth(), mPreviewSize.getHeight());
+//                } else {
+//                    mTextureView.setAspectRatio(
+//                            mPreviewSize.getHeight(), mPreviewSize.getWidth());
+//                }
 
                 mCameraId = cameraId;
                 return;
@@ -719,10 +738,9 @@ public class CameraPreviewActivityFragment extends Fragment
         float scale = Math.max(
                 (float) viewHeight / mPreviewSize.getHeight(),
                 (float) viewWidth / mPreviewSize.getWidth());
-        matrix.postScale(scale, scale, centerX, centerY);
+//        matrix.postScale(scale, scale, centerX, centerY);
 
         if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
-
             matrix.postRotate(90 * (rotation - 2), centerX, centerY);
         } else if (Surface.ROTATION_180 == rotation) {
             matrix.postRotate(180, centerX, centerY);
@@ -807,6 +825,21 @@ public class CameraPreviewActivityFragment extends Fragment
         }
     }
 
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnBarcodeScannedListener {
+        // TODO: Update argument type and name
+        void onRunnerScanned(String runnerID);
+        void onPositionScanned(String position);
+    }
 }
 
 
