@@ -33,4 +33,5 @@ dependencies {
     compile 'com.google.zxing:android-core:3.2.1'
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
+    // to do - move to https://github.com/dm77/barcodescanner (or at least rip the compiled libraries)
 }

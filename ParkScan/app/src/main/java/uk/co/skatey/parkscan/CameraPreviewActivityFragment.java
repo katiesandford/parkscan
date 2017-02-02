@@ -640,10 +640,17 @@ public class CameraPreviewActivityFragment extends Fragment
     }
 
     private void onDecodeResult(String result) {
+
         if (result.startsWith("A")) {
             // Received athlete
-        } else if (result.startsWith("P")) {
+            if (mListener != null) {
+                mListener.onRunnerScanned(result);
+            }
+        } else if (Utils.positionFromString(result) != null) {
             // Received position
+            if (mListener != null) {
+                mListener.onPositionScanned(result);
+            }
         } else {
             // Unknown
             Toast.makeText(getActivity(), R.string.unknown_barcode_message, Toast.LENGTH_SHORT).show();

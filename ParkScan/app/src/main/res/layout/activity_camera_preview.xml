@@ -6,6 +6,8 @@
     <data>
         <variable name="runnerID" type="String"/>
         <variable name="position" type="String"/>
+        <variable name="clearEnabled" type="Boolean"/>
+        <variable name="saveEnabled" type="Boolean"/>
     </data>
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -79,8 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="0dp"
-
-                        tools:text="Runner number"/>
+                        android:text="Runner number"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -136,6 +137,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="Clear"
+                android:onClick="onClearClicked"
+                android:enabled="@{clearEnabled}"
                 />
 
 
@@ -144,6 +147,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="Save"
+                android:onClick="onSaveClicked"
+                android:enabled="@{saveEnabled}"
                 />
 
         </LinearLayout>

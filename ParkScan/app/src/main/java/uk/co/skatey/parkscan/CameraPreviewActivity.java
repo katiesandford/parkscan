@@ -2,12 +2,15 @@ package uk.co.skatey.parkscan;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import java.io.FileNotFoundException;
@@ -20,20 +23,17 @@ import java.util.Locale;
 import uk.co.skatey.parkscan.databinding.ActivityCameraPreviewBinding;
 
 
-public class CameraPreviewActivity extends AppCompatActivity {
-
-    private static final String RECORDINGS_STORAGE_FOLDER = "recordings";
-    private static final String RECORDINGS_FILE_EXTENSION = ".csv";
+public class CameraPreviewActivity extends AppCompatActivity implements CameraPreviewActivityFragment.OnBarcodeScannedListener {
 
     private OutputStream dataOutputStream;
 
     private static final String CURRENT_RUNNER_KEY = "CameraPreviewActivity.CURRENT_RUNNER_KEY";
     private static final String CURRENT_POSITION_KEY = "CameraPreviewActivity.CURRENT_POSITION_KEY";
-    private String currentRunner;
-    private String currentPosition;
 
-    private TextView runnerIDTextView;
-    private TextView positionTextView;
+    private static final String EMPTY_SCAN_STRING = "N/A";
+
+    @Nullable private String currentRunner;
+    @Nullable private String currentPosition;
 
     private ActivityCameraPreviewBinding binding;
 
@@ -77,9 +77,7 @@ public class CameraPreviewActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //open the file
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
-        String date = sdf.format(new Date());
-        String fileName = RECORDINGS_STORAGE_FOLDER + "/" + date + RECORDINGS_FILE_EXTENSION;
+        String fileName = Utils.getCurrentFilename();
         try {
             dataOutputStream = openFileOutput(fileName, Context.MODE_APPEND);
         } catch (FileNotFoundException e) {
@@ -106,6 +104,7 @@ public class CameraPreviewActivity extends AppCompatActivity {
         String pairString = position + "," + runner + "\n";
         try {
             dataOutputStream.write(pairString.getBytes());
+            dataOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
             //TODO handle error
@@ -113,9 +112,26 @@ public class CameraPreviewActivity extends AppCompatActivity {
     }
 
     private void updateViews() {
-        //update the buttons
-        binding.setRunnerID(currentRunner);
-        binding.setPosition(currentPosition);
+
+        String newRunner = EMPTY_SCAN_STRING;
+        String newPosition = EMPTY_SCAN_STRING;
+
+        if (Utils.isStringRunnerId(currentRunner)) {
+            newRunner = currentRunner;
+        }
+
+        Integer position = Utils.positionFromString(currentPosition);
+
+        if (position != null) {
+            newPosition = position.toString();
+        }
+
+        //update the textViews
+        binding.setRunnerID(newRunner);
+        binding.setPosition(newPosition);
+
+        binding.setClearEnabled(!newPosition.equals(EMPTY_SCAN_STRING) || !newRunner.equals(EMPTY_SCAN_STRING));
+        binding.setSaveEnabled(!newPosition.equals(EMPTY_SCAN_STRING) && !newRunner.equals(EMPTY_SCAN_STRING));
     }
 
     private final CameraPreviewActivityFragment.OnBarcodeScannedListener onBarcodeScannedListener =
@@ -130,6 +146,61 @@ public class CameraPreviewActivity extends AppCompatActivity {
                     currentPosition = position;
                 }
             };
+
+    private void positiveVibrate() {
+        // Get instance of Vibrator from current Context
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        long[] pattern = {0, 200};
+
+        // Vibrate
+        v.vibrate(pattern, -1);
+    }
+
+    private void negativeVibrate() {
+        // Get instance of Vibrator from current Context
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        long[] pattern = {0, 200, 500, 200};
+
+        // Vibrate
+        v.vibrate(pattern, -1);
+    }
+
+    @Override
+    public void onRunnerScanned(String runnerID) {
+        if (currentRunner == null) {
+            positiveVibrate();
+            currentRunner = runnerID;
+            updateViews();
+        } else {
+//            negativeVibrate();
+        }
+    }
+
+    @Override
+    public void onPositionScanned(String position) {
+
+        if (currentPosition == null) {
+            positiveVibrate();
+            currentPosition = position;
+            updateViews();
+        } else {
+//            negativeVibrate();
+        }
+    }
+
+    public void onClearClicked(View view) {
+        currentRunner = null;
+        currentPosition = null;
+        updateViews();
+    }
+
+    public void onSaveClicked(View view) {
+        if (currentPosition == null || currentRunner == null) return;
+        writePair(currentRunner, currentPosition);
+        currentPosition = null;
+        currentRunner = null;
+        updateViews();
+    }
 }
-
-
