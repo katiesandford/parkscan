@@ -12,7 +12,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:screenOrientation="portrait">
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -25,7 +26,7 @@
         </activity>
         <activity
             android:name=".CameraPreviewActivity"
-            android:label="Scan Activity"
+            android:label="Scan Barcodes"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 

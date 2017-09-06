@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.1'
 
     defaultConfig {
         applicationId "uk.co.skatey.parkscan"
         minSdkVersion 22
-        targetSdkVersion 22
-        versionCode 1
+        targetSdkVersion 26
+        versionCode 4
         versionName "1.0"
     }
     buildTypes {
@@ -27,11 +27,11 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //    compile project(':ASCommon-Android:ASCamera')
 //    compile project(':ASCommon-Android:ASUtils')
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:support-v13:23.4.0'
-    compile 'com.google.zxing:core:3.2.1'
-    compile 'com.google.zxing:android-core:3.2.1'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
+    compile 'com.android.support:support-v13:26.0.0-alpha1'
+    compile 'com.google.zxing:core:3.3.0'
+//    compile 'com.google.zxing:android-core:3.3.0'
+    compile 'com.android.support:design:26.0.0-alpha1'
+    compile 'com.android.support:support-v4:26.0.0-alpha1'
     // to do - move to https://github.com/dm77/barcodescanner (or at least rip the compiled libraries)
 }
